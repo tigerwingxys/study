@@ -94,6 +94,24 @@ class Place {
         PlaceList[][][] M = new PlaceList[width][height][9];
 
         // FIXME
+        for(int x0=0;x0<width;x0++){
+            for(int y0=0;y0<height;y0++){
+                for(int i = 0 ; i<=8; i ++){
+                    M[x0][y0][i] = new PlaceList();
+                }
+
+                for(int x1=0; x1<width; x1++){
+                    for(int y1=0; y1<height; y1++){
+                        Place p1 = pl(x1,y1);
+                        int dir = dirOf(x0,y0,x1,y1);
+                        if( dir>0 ){
+                            M[x0][y0][0].add(p1);
+                            M[x0][y0][dir].add(p1);
+                        }
+                    }
+                }
+            }
+        }
         return M;
     }
 

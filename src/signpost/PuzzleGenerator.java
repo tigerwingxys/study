@@ -6,6 +6,8 @@ import java.util.Random;
 import signpost.Model.Sq;
 import static signpost.Place.PlaceList;
 import static signpost.Utils.*;
+import static sun.misc.Version.print;
+import static sun.misc.Version.println;
 
 /** A creator of random Signpost puzzles.
  *  @author
@@ -23,8 +25,9 @@ class PuzzleGenerator implements PuzzleSource {
         Model model =
             new Model(makePuzzleSolution(width, height, allowFreeEnds));
         // FIXME: Remove the "//" on the following two lines.
-        // makeSolutionUnique(model);
-        // model.autoconnect();
+        System.out.println(model);
+        makeSolutionUnique(model);
+        model.autoconnect();
         return model;
     }
 
@@ -54,15 +57,15 @@ class PuzzleGenerator implements PuzzleSource {
         _vals[x1][y1] = last;
         // FIXME: Remove the following return statement and uncomment the
         //        next three lines.
-        return new int[][] {
-            { 14, 9, 8, 1 },
-            { 15, 10, 7, 2 },
-            { 13, 11, 6, 3 },
-            { 16, 12, 5, 4 }
-        };
-        //boolean ok = findSolutionPathFrom(x0, y0);
-        //assert ok;
-        //return _vals;
+//        return new int[][] {
+//            { 14, 9, 8, 1 },
+//            { 15, 10, 7, 2 },
+//            { 13, 11, 6, 3 },
+//            { 16, 12, 5, 4 }
+//        };
+        boolean ok = findSolutionPathFrom(x0, y0);
+        assert ok;
+        return _vals;
     }
 
     /** Try to find a random path of queen moves through VALS from (X0, Y0)
@@ -105,6 +108,7 @@ class PuzzleGenerator implements PuzzleSource {
         while (makeForwardConnections(model)
                || makeBackwardConnections(model)) {
             found = true;
+            //System.out.println(model);//xys
         }
         return found;
     }
@@ -123,6 +127,7 @@ class PuzzleGenerator implements PuzzleSource {
                     result = true;
                 }
             }
+            //System.out.println(model);
         }
         return result;
     }
@@ -135,6 +140,25 @@ class PuzzleGenerator implements PuzzleSource {
      *  number in sequence). */
     static Sq findUniqueSuccessor(Model model, Sq start) {
         // FIXME: Fill in to satisfy the comment.
+        int cnt = 0;
+        Sq found = null;
+        cnt = start.successors().size();
+
+        for(Place p : start.successors()){
+            Sq sq = model.get(p);
+            if( start.connectable(sq)){
+                cnt ++;
+                if( cnt == 1){
+                    found = sq;
+                }
+            }
+            if( start.sequenceNum()>0 && start.sequenceNum() == sq.sequenceNum()-1 ){
+                return sq;
+            }
+        }
+        if( cnt==1 ){
+            return found;
+        }
         return null;
     }
 
@@ -152,6 +176,7 @@ class PuzzleGenerator implements PuzzleSource {
                     result = true;
                 }
             }
+            //System.out.println(model);
         }
         return result;
     }
@@ -164,6 +189,20 @@ class PuzzleGenerator implements PuzzleSource {
      *  already finds the other cases of numbered, unconnected cells. */
     static Sq findUniquePredecessor(Model model, Sq end) {
         // FIXME: Replace the following to satisfy the comment.
+        int cnt = 0;
+        Sq found = null;
+        for(Place p: end.predecessors()){
+            Sq sq = model.get(p);
+            if( sq.connectable(end)){
+                cnt ++;
+                if( cnt == 1){
+                    found = sq;
+                }
+            }
+        }
+        if( cnt == 1){
+            return found;
+        }
         return null;
     }
 
