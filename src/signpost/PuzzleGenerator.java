@@ -25,7 +25,6 @@ class PuzzleGenerator implements PuzzleSource {
         Model model =
             new Model(makePuzzleSolution(width, height, allowFreeEnds));
         // FIXME: Remove the "//" on the following two lines.
-        System.out.println(model);
         makeSolutionUnique(model);
         model.autoconnect();
         return model;
@@ -142,7 +141,6 @@ class PuzzleGenerator implements PuzzleSource {
         // FIXME: Fill in to satisfy the comment.
         int cnt = 0;
         Sq found = null;
-        cnt = start.successors().size();
 
         for(Place p : start.successors()){
             Sq sq = model.get(p);
@@ -155,6 +153,8 @@ class PuzzleGenerator implements PuzzleSource {
             if( start.sequenceNum()>0 && start.sequenceNum() == sq.sequenceNum()-1 ){
                 return sq;
             }
+
+
         }
         if( cnt==1 ){
             return found;

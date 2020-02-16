@@ -123,15 +123,20 @@ class Model implements Iterable<Model.Sq> {
         for(int w = 0; w <width(); w++ ){
             for( int h=0; h<height(); h++){
                 int sn = solution[w][h];
-                Sq sq = new Sq(w,h,0,false,0,-1);
+                _solnNumToPlace[sn] = pl(w,h);
+                Sq sq ;
+                if(sn==1||sn==last){
+                    sq = new Sq(w,h,sn,true,0,0);
+                }else {
+                    sq = new Sq(w,h,0,false,0,-1);
+                }
                 _board[w][h] = sq;
                 allNums.set(sn);
                 _allSquares.add(sq);
-                _solnNumToPlace[sn] = pl(w,h);
             }
         }
-        solnNumToSq(1).setFixedNum(1);
-        solnNumToSq(last).setFixedNum(last);
+        //solnNumToSq(1).setFixedNum(1);
+        //solnNumToSq(last).setFixedNum(last);
         for(int i = 1; i<= last; i ++){
             if( !allNums.get(i) ){
                 throw badArgs("the sequence number"+i+"has not set");
@@ -148,16 +153,14 @@ class Model implements Iterable<Model.Sq> {
             sq._dir = arrowDirection(sq.x,sq.y);
             sq._successors = allSuccessors(sq.x,sq.y,sq._dir);
         }
-        for(int i=2; i<=last; i++){
-            Sq sq=solnNumToSq(i);
-            sq._predecessors = new PlaceList();
-            for(int j=1; j<=last; j++){
-                if( j==i ) continue;
-                Sq fromSq = solnNumToSq(j);
-                if( fromSq._dir == dirOf(fromSq.x,fromSq.y,sq.x,sq.y) ){
-                    Place fromPlace = solnNumToPlace(j);
-                    sq._predecessors.add(fromPlace);
+        for(Sq sq:_allSquares){
+            if( sq.successors() ==null ) continue;
+            for(Place target:sq.successors()){
+                Sq tsq = get(target);
+                if( tsq.predecessors()==null){
+                    tsq._predecessors = new PlaceList();
                 }
+                tsq._predecessors.add(sq.pl);
             }
         }
 
@@ -586,7 +589,7 @@ class Model implements Iterable<Model.Sq> {
          */
         boolean connectable(Sq s1) {
             // FIXME
-            if(direction() != pl.dirOf(s1.pl)){
+            if(direction()==0 || direction() != pl.dirOf(s1.pl)){
                 return false;
             }
             if(s1.predecessor() != null || successor() != null ){
@@ -599,13 +602,12 @@ class Model implements Iterable<Model.Sq> {
                 return false;
             }
             if( this.sequenceNum()==0 && s1.sequenceNum()==0 ){
-                if( group()>0 || s1.group()>0)
-                {
-                    if(group() == s1.group())
-                    {
-                        return false;
-                    }
+                if( _head == s1._head){
+                    return false;
                 }
+            }
+            if( s1.sequenceNum() == 1 || sequenceNum()==width()*height()){
+                return false;
             }
             return true;
         }
