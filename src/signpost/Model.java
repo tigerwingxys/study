@@ -94,22 +94,6 @@ class Model implements Iterable<Model.Sq> {
         // puzzle-generation software is complete.
         // FIXME: Remove everything down to and including
         // "// END DUMMY SETUP".
-//        _board = new Sq[][] {
-//            { new Sq(0, 0, 0, false, 2, -1), new Sq(0, 1, 0, false, 2, -1),
-//              new Sq(0, 2, 0, false, 4, -1), new Sq(0, 3, 1, true, 2, 0) },
-//            { new Sq(1, 0, 0, false, 2, -1), new Sq(1, 1, 0, false, 2, -1),
-//              new Sq(1, 2, 0, false, 6, -1), new Sq(1, 3, 0, false, 2, -1) },
-//            { new Sq(2, 0, 0, false, 6, -1), new Sq(2, 1, 0, false, 2, -1),
-//              new Sq(2, 2, 0, false, 6, -1), new Sq(2, 3, 0, false, 2, -1) },
-//            { new Sq(3, 0, 16, true, 0, 0), new Sq(3, 1, 0, false, 5, -1),
-//              new Sq(3, 2, 0, false, 6, -1), new Sq(3, 3, 0, false, 4, -1) }
-//        };
-//        for (Sq[] col: _board) {
-//            for (Sq sq : col) {
-//                _allSquares.add(sq);
-//            }
-//        }
-        // END DUMMY SETUP
 
         // FIXME: Initialize _board so that _board[x][y] contains the Sq object
         //        representing the contents at cell (x, y), _allSquares
@@ -592,12 +576,9 @@ class Model implements Iterable<Model.Sq> {
             if(direction()==0 || direction() != pl.dirOf(s1.pl)){
                 return false;
             }
-            if(s1.predecessor() != null || successor() != null ){
+            if(s1.predecessor() != null || successor() != null ||s1.sequenceNum() == 1 || sequenceNum()==width()*height()){
                 return false;
             }
-//            if( s1.group()>=0 && s1.head() != s1){//??????
-//                return false;
-//            }
             if( this.sequenceNum()>0 && s1.sequenceNum()>0 && this.sequenceNum() != s1.sequenceNum()-1){
                 return false;
             }
@@ -605,9 +586,6 @@ class Model implements Iterable<Model.Sq> {
                 if( _head == s1._head){
                     return false;
                 }
-            }
-            if( s1.sequenceNum() == 1 || sequenceNum()==width()*height()){
-                return false;
             }
             return true;
         }
