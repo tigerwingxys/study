@@ -582,10 +582,8 @@ class Model implements Iterable<Model.Sq> {
             if( this.sequenceNum()>0 && s1.sequenceNum()>0 && this.sequenceNum() != s1.sequenceNum()-1){
                 return false;
             }
-            if( this.sequenceNum()==0 && s1.sequenceNum()==0 ){
-                if( _head == s1._head){
-                    return false;
-                }
+            if( this.sequenceNum()==0 && s1.sequenceNum()==0 && _head==s1._head){
+                return false;
             }
             return true;
         }
@@ -712,7 +710,7 @@ class Model implements Iterable<Model.Sq> {
                     if(next.successor()!=null){
                         next._group = newGroup();
                     }else {
-                        _group = -1;
+                        next._group = -1;
                     }
                 }
             }
